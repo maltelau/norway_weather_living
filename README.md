@@ -1,7 +1,8 @@
 
 
 ![](scatterplot.png)
-![](map.png | height=800)
+<img src="map.png" alt="map of norway" width="1349" height="826">
+
 
 * Inspired by https://twitter.com/dataandme/status/932610025691983872
 
