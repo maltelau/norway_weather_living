@@ -1,5 +1,5 @@
 library(pacman)
-p_load(cowplot, tidyverse, purrr, comf, extrafont, ggrepel, xkcd)
+p_load(cowplot, tidyverse, purrr, comf, extrafont, ggrepel, xkcd, geofacet)
 
 
 # how to get the xkcd font?
@@ -75,7 +75,8 @@ county_avg %>%
           axis.line = element_blank(),
           legend.position = c(.1, .8))
 
-
+# select(county_avg, County) %>%
+#     write.csv("data/county_avg.csv")
 
 
 # on a map
@@ -103,3 +104,29 @@ county_avg %>%
 
 
 
+## Trying out geofacet
+no_counties <- data.frame(
+    # name.County = c("4", "17", "9", "8", "7", "15", "5", "14", "10", "3", "6", "11", "13", "12", "19", "16","2", "18"),
+    code = c("Finnmark", "Troms", "Nordland", "Nord-Trøndelag", "Møre Og Romsdal", "Sør-Trøndelag", "Hedmark", "Sogn Og Fjordane", "Oppland", "Buskerud", "Hordaland", "Oslo", "Rogaland", "Østfold", "Vestfold", "Telemark", "Aust-Agder", "Vest-Agder"),
+    name = c("Finnmark", "Troms", "Nordland", "Nord-Trøndelag", "Møre Og Romsdal", "Sør-Trøndelag", "Hedmark", "Sogn Og Fjordane", "Oppland", "Buskerud", "Hordaland", "Oslo", "Rogaland", "Østfold", "Vestfold", "Telemark", "Aust-Agder", "Vest-Agder"),
+    row = c(1, 1, 2, 3, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8),
+    col = c(5, 4, 3, 2, 1, 2, 3, 1, 2, 2, 1, 3, 1, 4, 3, 2, 3, 2),
+    stringsAsFactors = FALSE
+)
+
+county_avg %>%
+    # filter(County %in% c("Hordaland, Akershus, Troms")) %>%
+    # gather("key", "value", winter_temperature, hum_index) %>%
+    ggplot(aes(factor(1), factor(1), colour = hum_index , size = winter_temperature)) +
+    coord_flip() +
+    # geom_bar(stat = "identity") +
+    geom_point() +
+    facet_geo(~ County, grid = no_counties) +
+    theme_classic() +
+    theme(axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          legend.position = c(.2,.9)) +
+    labs(x = "", y = "", title = "Where to live in Norway, based on Winter Temperature and Summer Humidity Index") +
+    guides(colour = guide_colourbar(title = "Summer Humidity Index", direction = "horizontal", title.position = "top"),
+           size = guide_legend(title = "Winter Temperature °C", direction = "horizontal", title.position = "top")) +
+    scale_size_continuous(range = c(2,10))
